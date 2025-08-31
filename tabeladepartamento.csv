@@ -1,0 +1,11 @@
+id_departamento,NomeDepartamento,NumeroDepartamento,funcional_gerente
+D001,Crédito e Empréstimos,N001,F0076
+D002,Atendimento ao Cliente,N002,F0036
+D003,Tecnologia da Informação,N003,F0056
+D004,Compliance e Risco,N004,F0014
+D005,Operações,N005,F0079
+D006,Marketing Digital,N006,F0058
+D007,Recursos Humanos,N007,F0022
+D008,Financeiro,N008,F0004
+D009,Análise de Dados,N009,F0035
+D010,Produtos e Inovação,N010,F0070

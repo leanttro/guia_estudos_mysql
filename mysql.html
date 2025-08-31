@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL e Análise de Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0d1117;
+            --bg-light: #f3f4f6;
+            --card-dark: #161b22;
+            --card-light: #ffffff;
+            --text-dark: #f0f6fc;
+            --text-light: #1f2937;
+            --text-muted-dark: #adbac7;
+            --text-muted-light: #4b5563;
+            --accent-gradient: linear-gradient(135deg, #3498db, #2980b9);
+            --border-dark: #30363d;
+            --border-light: #e5e7eb;
+        }
+
+        html.dark {
+            --bg-color: var(--bg-dark);
+            --card-color: var(--card-dark);
+            --text-color: var(--text-dark);
+            --text-muted: var(--text-muted-dark);
+            --border-color: var(--border-dark);
+        }
+
+        html:not(.dark) {
+            --bg-color: var(--bg-light);
+            --card-color: var(--card-light);
+            --text-color: var(--text-light);
+            --text-muted: var(--text-muted-light);
+            --border-color: var(--border-light);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .navbar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(13, 17, 23, 0.7);
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        html:not(.dark) .navbar-fixed {
+            background: rgba(243, 244, 246, 0.8);
+        }
+        
+        .dynamic-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.2);
+            border-radius: 1.5rem;
+            transition: all 0.5s ease;
+        }
+        
+        .gradient-text {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-animation {
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(3deg); }
+        }
+        
+        .code-block-wrapper {
+            position: relative;
+            border-radius: 1rem;
+            background: #161b22;
+            padding: 1px;
+            overflow: hidden;
+        }
+        .code-block-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: var(--accent-gradient);
+            z-index: 0;
+            animation: spin 4s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .code-block {
+            background: #0d1117;
+            color: #c9d1d9;
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            position: relative;
+            z-index: 1;
+            border-radius: 1rem;
+        }
+        
+        .code-block .keyword { color: #569cd6; font-weight: 600; }
+        .code-block .type { color: #4ec9b0; }
+        .code-block .comment { color: #6a9955; font-style: italic; }
+        .code-block .string { color: #ce9178; }
+        
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: #c9d1d9;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            z-index: 2;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .step-card::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: -1.5rem;
+            top: 2.5rem;
+            width: 3rem;
+            height: 3rem;
+            background: var(--accent-gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+            border: 4px solid var(--bg-color);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            border-left: 2px dashed var(--border-color);
+            counter-reset: step-counter;
+        }
+        
+        .feature-icon {
+            background: var(--accent-gradient);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 10px 25px -8px rgba(52, 152, 219, 0.4);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            padding-bottom: 4px;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: var(--accent-gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .btn-gradient {
+            background-image: var(--accent-gradient);
+            background-size: 200% auto;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 15px 0 rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-gradient:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px 0 rgba(52, 152, 219, 0.4);
+        }
+        
+        .list-item {
+            display: flex;
+            align-items: start;
+            gap: 1.25rem;
+        }
+        .list-item i {
+            margin-top: 5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .animate-on-load {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-load.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #theme-toggle-btn {
+            background: var(--card-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar-fixed">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-3xl font-extrabold gradient-text"><i class="fas fa-database"></i></div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#sobre" class="nav-link font-semibold">Sobre MySQL</a>
+                    <a href="#instalacao" class="nav-link font-semibold">Instalação</a>
+                    <a href="#exemplos-essenciais" class="nav-link font-semibold">Exemplos</a>
+                    <a href="#glossario" class="nav-link font-semibold">Glossário</a>
+                    <a href="#guia-pratico" class="nav-link font-semibold">Guia Prático</a>
+                    <a href="#analise-dados" class="nav-link font-semibold">Análise de Dados</a>
+                    <a href="#inicio" class="nav-link font-semibold">Sobre Mim</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="theme-toggle-btn" class="w-10 h-10 rounded-full flex items-center justify-center text-xl transition-all duration-300 hover:scale-110">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon hidden"></i>
+                    </button>
+                    <div class="md:hidden">
+                        <button id="mobile-menu-btn" class="focus:outline-none text-2xl">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-4">
+                    <a href="#sobre" class="nav-link font-semibold text-center">Sobre MySQL</a>
+                    <a href="#instalacao" class="nav-link font-semibold text-center">Instalação</a>
+                    <a href="#exemplos-essenciais" class="nav-link font-semibold text-center">Exemplos</a>
+                    <a href="#glossario" class="nav-link font-semibold text-center">Glossário</a>
+                    <a href="#guia-pratico" class="nav-link font-semibold text-center">Guia Prático</a>
+                    <a href="#analise-dados" class="nav-link font-semibold text-center">Análise de Dados</a>
+                    <a href="#inicio" class="nav-link font-semibold text-center">Sobre Mim</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Modal do Glossário -->
+    <div id="glossary-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4">
+        <div id="glossary-modal-card" class="dynamic-card p-8 rounded-2xl w-full max-w-2xl transform opacity-0 scale-95 transition-all duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-3xl font-bold gradient-text"></h3>
+                <button id="modal-close-btn" class="text-2xl hover:opacity-70 transition-opacity">&times;</button>
+            </div>
+            <p id="modal-description" class="text-lg leading-relaxed" style="color: var(--text-muted);"></p>
+        </div>
+    </div>
+
+
+    <main class="pt-24 overflow-x-hidden">
+        <!-- Seção sobre MySQL e Análise de Dados -->
+        <section id="sobre" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 animate-on-load">
+                    <h2 class="text-5xl lg:text-7xl font-extrabold gradient-text mb-2">MYSQL WORKBENCH</h2>
+                    <p class="text-xl" style="color: var(--text-muted);">
+                        By: <a href="https://www.linkedin.com/in/leandro-andrade-oliveira/" target="_blank" rel="noopener noreferrer" class="font-bold text-white underline hover:text-blue-400 transition-colors">Leandro Andrade</a>
+                    </p>
+                    <p class="text-lg md:text-xl max-w-3xl mx-auto mt-6" style="color: var(--text-muted);">Este repositório foi desenvolvido como base de estudos, reunindo os conteúdos aprendidos no curso Banco de Dados para Data Science do Senai.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div class="dynamic-card p-10 hover:transform hover:-translate-y-3 transition duration-500 animate-on-load" style="transition-delay: 200ms;">
+                        <div class="feature-icon mb-6"><i class="fas fa-server"></i></div>
+                        <h3 class="text-4xl font-bold gradient-text mb-6">O que é MySQL?</h3>
+                        <ul class="space-y-4 leading-relaxed text-lg">
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Um sistema de gestão de base de dados relacional, open-source e extremamente popular.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Funciona como uma "biblioteca digital" super organizada para guardar e aceder a dados.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Utiliza a linguagem SQL, o padrão universal para comunicar com bases de dados.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;É a espinha dorsal de inúmeras aplicações web, desde startups a gigantes da tecnologia.</span></li>
+                        </ul>
+                    </div>
+                    <div class="dynamic-card p-10 hover:transform hover:-translate-y-3 transition duration-500 animate-on-load" style="transition-delay: 400ms;">
+                        <div class="feature-icon mb-6"><i class="fas fa-magnifying-glass-chart"></i></div>
+                        <h3 class="text-4xl font-bold gradient-text mb-6">O que é Análise de Dados?</h3>
+                        <ul class="space-y-4 leading-relaxed text-lg">
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;A arte de inspecionar, limpar e modelar dados para descobrir informações úteis.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;O seu principal objetivo é apoiar a tomada de decisões com base em evidências.</span></li>
+                             <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;É como ser um detetive que encontra padrões e histórias escondidas nos números.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Bases de dados como o MySQL são o ponto de partida, fornecendo a matéria-prima para a análise.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Instalação do MySQL -->
+        <section id="instalacao" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 animate-on-load">
+                    <h2 class="text-5xl lg:text-7xl font-extrabold gradient-text mb-6">Setup do Ambiente</h2>
+                    <p class="text-xl md:text-2xl max-w-4xl mx-auto" style="color: var(--text-muted);">Vamos preparar o seu computador com as ferramentas essenciais para começar a trabalhar com MySQL.</p>
+                </div>
+                <div class="max-w-5xl mx-auto relative timeline space-y-12">
+                    <div class="dynamic-card p-10 animate-on-load">
+                        <span class="step-card"></span>
+                        <div class="flex items-center mb-6"><div class="feature-icon mr-6"><i class="fas fa-download"></i></div><h3 class="text-4xl font-bold gradient-text">Passo 1: Instalar o MySQL Server</h3></div>
+                        <p class="mb-6 text-lg" style="color: var(--text-muted);">O MySQL Community Server é o motor da sua base de dados. É aqui que a magia acontece.</p>
+                        <ul class="list-item flex-col space-y-3 bg-black/20 dark:bg-white/5 p-6 rounded-2xl mb-6 text-base">
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Aceda à página oficial e procure por "MySQL Community (GPL) Downloads".</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Escolha o "MySQL Installer for Windows" para uma instalação simplificada.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;No "Setup Type", selecione <strong>Developer Default</strong> para incluir todas as ferramentas.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Crie uma senha segura para o utilizador 'root' e guarde-a bem!</span></li>
+                        </ul>
+                        <a href="https://dev.mysql.com/downloads/mysql/" target="_blank" class="btn-gradient"><i class="fas fa-external-link-alt"></i> Baixar MySQL Server</a>
+                    </div>
+                    <div class="dynamic-card p-10 animate-on-load">
+                        <span class="step-card"></span>
+                        <div class="flex items-center mb-6"><div class="feature-icon mr-6"><i class="fas fa-tools"></i></div><h3 class="text-4xl font-bold gradient-text">Passo 2: Usar o MySQL Workbench</h3></div>
+                        <p class="mb-6 text-lg" style="color: var(--text-muted);">O Workbench é a sua interface gráfica (GUI). É o seu cockpit para controlar a base de dados de forma visual e intuitiva.</p>
+                         <ul class="list-item flex-col space-y-3 bg-black/20 dark:bg-white/5 p-6 rounded-2xl mb-6 text-base">
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Se escolheu "Developer Default", o Workbench já está instalado.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Se não, pode baixá-lo separadamente no site oficial.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Abra o programa, clique na conexão local e insira a sua senha de 'root'.</span></li>
+                            <li class="list-item"><i class="fas fa-check-circle"></i><span>&nbsp;&nbsp;Pronto! Está conectado e pronto para criar.</span></li>
+                        </ul>
+                        <a href="https://dev.mysql.com/downloads/workbench/" target="_blank" class="btn-gradient"><i class="fas fa-external-link-alt"></i> Baixar MySQL Workbench</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção de Exemplos Essenciais -->
+        <section id="exemplos-essenciais" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 animate-on-load">
+                    <h2 class="text-5xl lg:text-7xl font-extrabold gradient-text mb-6">Comandos Essenciais de SQL</h2>
+                    <p class="text-xl md:text-2xl max-w-3xl mx-auto" style="color: var(--text-muted);">Domine os comandos fundamentais com exemplos genéricos que pode adaptar para qualquer projeto.</p>
+                </div>
+                <div class="space-y-12 max-w-5xl mx-auto">
+                    <div class="dynamic-card p-10 animate-on-load"><h3 class="text-3xl font-bold gradient-text mb-4">Criar um Banco de Dados</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">O ponto de partida. Cria o "contêiner" para as suas tabelas.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="keyword">CREATE DATABASE</span> seu_banco_de_dados;</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><h3 class="text-3xl font-bold gradient-text mb-4">Criar uma Tabela</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Define a estrutura de uma tabela, colunas, tipos de dados e regras.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="keyword">CREATE TABLE</span> sua_tabela (
+    id <span class="type">INT</span> <span class="keyword">NOT NULL PRIMARY KEY</span>,
+    nome <span class="type">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+    data_cadastro <span class="type">DATE</span>
+);</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><h3 class="text-3xl font-bold gradient-text mb-4">Adicionar Chave Estrangeira</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Cria uma ligação entre duas tabelas para garantir a consistência dos dados.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="keyword">ALTER TABLE</span> sua_tabela_filha
+<span class="keyword">ADD FOREIGN KEY</span> (id_da_tabela_pai) <span class="keyword">REFERENCES</span> sua_tabela_pai(id);</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><h3 class="text-3xl font-bold gradient-text mb-4">Realizar uma Consulta</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Busca dados específicos, filtrando os resultados com a cláusula `WHERE`.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="comment">-- Seleciona todos os registos onde o nome é 'Maria'</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> sua_tabela <span class="keyword">WHERE</span> nome = <span class="string">'Maria'</span>;</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Glossário -->
+        <section id="glossario" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 animate-on-load">
+                    <h2 class="text-5xl lg:text-7xl font-extrabold gradient-text mb-6">Glossário Rápido de SQL</h2>
+                    <p class="text-xl md:text-2xl max-w-3xl mx-auto" style="color: var(--text-muted);">Clique num termo para ver uma explicação rápida. Aprofunde os seus conhecimentos!</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="PRIMARY KEY">PRIMARY KEY</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="FOREIGN KEY">FOREIGN KEY</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="NOT NULL">NOT NULL</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="VARCHAR">VARCHAR</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="INT">INT</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="DECIMAL">DECIMAL</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="DATE">DATE</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="NULL">NULL</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="SELECT">SELECT</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="GROUP BY">GROUP BY</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="ORDER BY">ORDER BY</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="LIMIT">LIMIT</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="INSERT">INSERT</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="UPDATE">UPDATE</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="DELETE">DELETE</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="COUNT">COUNT</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="AS">AS</div>
+                    <div class="glossary-term dynamic-card text-center p-6 font-semibold text-lg cursor-pointer hover:transform hover:-translate-y-2 transition-transform duration-300 animate-on-load" data-term="DISTINCT">DISTINCT</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção de Guia Prático -->
+        <section id="guia-pratico" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 animate-on-load">
+                    <h2 class="text-5xl lg:text-7xl font-extrabold gradient-text mb-6">Guia Prático: Mãos à Obra</h2>
+                    <p class="text-xl md:text-2xl max-w-3xl mx-auto" style="color: var(--text-muted);">Siga o passo a passo completo para criar e popular a sua primeira base de dados funcional.</p>
+                </div>
+                <div class="max-w-5xl mx-auto relative timeline space-y-12">
+                    <div class="dynamic-card p-10 animate-on-load">
+                        <span class="step-card"></span>
+                        <h3 class="text-4xl font-bold gradient-text mb-4">Preparação dos Ficheiros</h3>
+                        <p class="mb-6 text-lg" style="color: var(--text-muted);">Primeiro, baixe as planilhas (.csv) e salve-as na pasta correta para que o MySQL as encontre.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                            <a href="#" class="btn-gradient text-sm justify-center">clientes.csv</a><a href="#" class="btn-gradient text-sm justify-center">conta.csv</a><a href="#" class="btn-gradient text-sm justify-center">clienteconta.csv</a><a href="#" class="btn-gradient text-sm justify-center">colaboradores.csv</a><a href="#" class="btn-gradient text-sm justify-center">departamento.csv</a><a href="#" class="btn-gradient text-sm justify-center">emprestimos.csv</a><a href="#" class="btn-gradient text-sm justify-center">pagamento.csv</a><a href="#" class="btn-gradient text-sm justify-center">scorecredito.csv</a><a href="#" class="btn-gradient text-sm justify-center">telefones.csv</a>
+                        </div>
+                        <p class="mb-2 font-semibold">Salve todos os 9 ficheiros nesta pasta:</p>
+                        <div class="code-block-wrapper"><pre class="code-block"><code class="language-text">C:\ProgramData\MySQL\MySQL Server 8.0\Uploads</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div>
+                    </div>
+                    <div class="dynamic-card p-10 animate-on-load"><span class="step-card"></span><h3 class="text-4xl font-bold gradient-text mb-4">1. Criar a Base de Dados</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">O comando inicial que cria o espaço para o nosso projeto.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="keyword">CREATE DATABASE</span> sn_bank;</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><span class="step-card"></span><h3 class="text-4xl font-bold gradient-text mb-4">2. Criar as Tabelas</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Definir a "planta" de cada tabela, especificando todas as colunas e as suas regras.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="keyword">USE</span> sn_bank;
+
+<span class="keyword">CREATE TABLE</span> tabelaclientes (id_cliente <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL PRIMARY KEY</span>, DataNascimento <span class="type">DATE</span> <span class="keyword">NOT NULL</span>, CPF <span class="type">VARCHAR</span>(11) <span class="keyword">NOT NULL</span>, Nome <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, Email <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, Rua <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, Bairro <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, Cidade <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, Estado <span class="type">CHAR</span>(2) <span class="keyword">NOT NULL</span>, CEP <span class="type">CHAR</span>(8) <span class="keyword">NOT NULL</span>, funcional <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>);
+<span class="keyword">CREATE TABLE</span> tabelaconta (num_conta <span class="type">VARCHAR</span>(20) <span class="keyword">PRIMARY KEY</span>, TipoConta <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, Saldo <span class="type">DECIMAL</span> (10,2) <span class="keyword">NOT NULL</span>, DataAbertura <span class="type">DATE</span>);
+<span class="keyword">CREATE TABLE</span> tabelaclienteconta (num_conta <span class="type">VARCHAR</span>(20), id_cliente <span class="type">VARCHAR</span>(20), <span class="keyword">PRIMARY KEY</span> (num_conta, id_cliente));
+<span class="keyword">CREATE TABLE</span> tabeladepartamento (id_departamento <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL PRIMARY KEY</span>, NomeDepartamento <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, NumeroDepartamento <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>, funcional_gerente <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>);
+<span class="keyword">CREATE TABLE</span> tabelacolaboradores (funcional <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL PRIMARY KEY</span>, Salario <span class="type">DECIMAL</span> (10,2), NomeColaborador <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, EmailColaborador <span class="type">VARCHAR</span>(50), Cargo <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, CPFColaborador <span class="type">VARCHAR</span>(11) <span class="keyword">NOT NULL</span>, TelefoneColaborador <span class="type">VARCHAR</span>(11) <span class="keyword">NOT NULL</span>, id_departamento <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>);
+<span class="keyword">CREATE TABLE</span> tabelaemprestimos (num_contrato <span class="type">VARCHAR</span>(20) <span class="keyword">PRIMARY KEY</span>, Status <span class="type">BOOLEAN</span> <span class="keyword">NOT NULL</span>, Prazo <span class="type">INTEGER</span> <span class="keyword">NOT NULL</span>, DataInicio <span class="type">DATE</span> <span class="keyword">NOT NULL</span>, Tipo <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>, Valor <span class="type">DECIMAL</span> (10,2) <span class="keyword">NOT NULL</span>, id_cliente <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>, id_colaborador <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>);
+<span class="keyword">CREATE TABLE</span> tabelapagamento (id_pagamento <span class="type">VARCHAR</span>(20) <span class="keyword">PRIMARY KEY</span>, DataPagamento <span class="type">DATE</span> <span class="keyword">NOT NULL</span>, Valor <span class="type">DECIMAL</span> (10,2) <span class="keyword">NOT NULL</span>, Status <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>, num_contrato <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>);
+<span class="keyword">CREATE TABLE</span> tabelascorecredito (id_score <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL PRIMARY KEY</span>, DataConsulta <span class="type">DATE</span>, Fonte <span class="type">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>, Pontuacao <span class="type">INTEGER</span> <span class="keyword">NOT NULL</span>, Justificativa <span class="type">TEXT</span>, id_cliente <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>);
+<span class="keyword">CREATE TABLE</span> tabelatelefones (id_telefone <span class="type">VARCHAR</span>(20) <span class="keyword">PRIMARY KEY</span>, Telefone <span class="type">VARCHAR</span>(11) <span class="keyword">NOT NULL</span>, id_cliente <span class="type">VARCHAR</span>(20) <span class="keyword">NOT NULL</span>);
+</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><span class="step-card"></span><h3 class="text-4xl font-bold gradient-text mb-4">3. Carregar os Dados</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Popular as tabelas vazias com os dados dos ficheiros .csv.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="keyword">LOAD DATA INFILE</span> <span class="string">'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/tabelaclientes.csv'</span> <span class="keyword">INTO TABLE</span> tabelaclientes <span class="keyword">FIELDS TERMINATED BY</span> <span class="string">','</span> <span class="keyword">LINES TERMINATED BY</span> <span class="string">'\\n'</span> <span class="keyword">IGNORE 1 ROWS</span>;
+<span class="keyword">LOAD DATA INFILE</span> <span class="string">'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/tabelaconta.csv'</span> <span class="keyword">INTO TABLE</span> tabelaconta <span class="keyword">FIELDS TERMINATED BY</span> <span class="string">','</span> <span class="keyword">LINES TERMINATED BY</span> <span class="string">'\\n'</span> <span class="keyword">IGNORE 1 ROWS</span>;
+<span class="keyword">LOAD DATA INFILE</span> <span class="string">'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/tabeladepartamento.csv'</span> <span class="keyword">INTO TABLE</span> tabeladepartamento <span class="keyword">FIELDS TERMINATED BY</span> <span class="string">','</span> <span class="keyword">LINES TERMINATED BY</span> <span class="string">'\\n'</span> <span class="keyword">IGNORE 1 ROWS</span>;
+<span class="keyword">LOAD DATA INFILE</span> <span class="string">'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/tabelacolaboradores.csv'</span> <span class="keyword">INTO TABLE</span> tabelacolaboradores <span class="keyword">FIELDS TERMINATED BY</span> <span class="string">','</span> <span class="keyword">LINES TERMINATED BY</span> <span class="string">'\\n'</span> <span class="keyword">IGNORE 1 ROWS</span>;
+<span class="keyword">LOAD DATA INFILE</span> <span class="string">'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/tabelaemprestimos.csv'</span> <span class="keyword">INTO TABLE</span> tabelaemprestimos <span class="keyword">FIELDS TERMINATED BY</span> <span class="string">','</span> <span class="keyword">LINES TERMINATED BY</span> <span class="string">'\\n'</span> <span class="keyword">IGNORE 1 ROWS</span>;
+<span class="keyword">LOAD DATA INFILE</span> <span class="string">'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/tabelapagamento.csv'</span> <span class="keyword">INTO TABLE</span> tabelapagamento <span class="keyword">FIELDS TERMINATED BY</span> <span class="string">','</span> <span class="keyword">LINES TERMINATED BY</span> <span class="string">'\\n'</span> <span class="keyword">IGNORE 1 ROWS</span>;
+<span class="keyword">LOAD DATA INFILE</span> <span class="string">'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/tabelascorecredito.csv'</span> <span class="keyword">INTO TABLE</span> tabelascorecredito <span class="keyword">FIELDS TERMINATED BY</span> <span class="string">','</span> <span class="keyword">LINES TERMINATED BY</span> <span class="string">'\\n'</span> <span class="keyword">IGNORE 1 ROWS</span>;
+<span class="keyword">LOAD DATA INFILE</span> <span class="string">'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/tabelaclienteconta.csv'</span> <span class="keyword">INTO TABLE</span> tabelaclienteconta <span class="keyword">FIELDS TERMINATED BY</span> <span class="string">','</span> <span class="keyword">LINES TERMINATED BY</span> <span class="string">'\\n'</span> <span class="keyword">IGNORE 1 ROWS</span>;
+<span class="keyword">LOAD DATA INFILE</span> <span class="string">'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/tabelatelefones.csv'</span> <span class="keyword">INTO TABLE</span> tabelatelefones <span class="keyword">FIELDS TERMINATED BY</span> <span class="string">','</span> <span class="keyword">LINES TERMINATED BY</span> <span class="string">'\\n'</span> <span class="keyword">IGNORE 1 ROWS</span>;
+</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><span class="step-card"></span><h3 class="text-4xl font-bold gradient-text mb-4">4. Adicionar Chaves Estrangeiras</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Criar as ligações vitais entre as tabelas para garantir a integridade dos dados.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="keyword">ALTER TABLE</span> tabelaclienteconta <span class="keyword">ADD FOREIGN KEY</span> (id_cliente) <span class="keyword">REFERENCES</span> tabelaclientes(id_cliente), <span class="keyword">ADD FOREIGN KEY</span> (num_conta) <span class="keyword">REFERENCES</span> tabelaconta(num_conta);
+<span class="keyword">ALTER TABLE</span> tabelacolaboradores <span class="keyword">ADD FOREIGN KEY</span> (id_departamento) <span class="keyword">REFERENCES</span> tabeladepartamento(id_departamento);
+<span class="keyword">ALTER TABLE</span> tabelaemprestimos <span class="keyword">ADD FOREIGN KEY</span> (id_cliente) <span class="keyword">REFERENCES</span> tabelaclientes(id_cliente), <span class="keyword">ADD FOREIGN KEY</span> (id_colaborador) <span class="keyword">REFERENCES</span> tabelacolaboradores(funcional);
+<span class="keyword">ALTER TABLE</span> tabelapagamento <span class="keyword">ADD FOREIGN KEY</span> (num_contrato) <span class="keyword">REFERENCES</span> tabelaemprestimos(num_contrato);
+<span class="keyword">ALTER TABLE</span> tabelascorecredito <span class="keyword">ADD FOREIGN KEY</span> (id_cliente) <span class="keyword">REFERENCES</span> tabelaclientes(id_cliente);
+<span class="keyword">ALTER TABLE</span> tabelaclientes <span class="keyword">ADD FOREIGN KEY</span> (funcional) <span class="keyword">REFERENCES</span> tabelacolaboradores(funcional);
+<span class="keyword">ALTER TABLE</span> tabeladepartamento <span class="keyword">ADD FOREIGN KEY</span> (funcional_gerente) <span class="keyword">REFERENCES</span> tabelacolaboradores(funcional);
+<span class="keyword">ALTER TABLE</span> tabelatelefones <span class="keyword">ADD FOREIGN KEY</span> (id_cliente) <span class="keyword">REFERENCES</span> tabelaclientes(id_cliente);
+</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><span class="step-card"></span><h3 class="text-4xl font-bold gradient-text mb-4">5. Verificação e Consultas</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Explorar os dados para garantir que tudo está correto e começar a extrair insights.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="comment">-- Contar quantos clientes existem em São Paulo (SP)</span>
+<span class="keyword">SELECT COUNT</span>(*) <span class="keyword">FROM</span> tabelaclientes <span class="keyword">WHERE</span> Estado = <span class="string">'SP'</span>;</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Análise de Dados -->
+        <section id="analise-dados" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 animate-on-load">
+                    <h2 class="text-5xl lg:text-7xl font-extrabold gradient-text mb-6">Análise de Dados com SQL</h2>
+                    <p class="text-xl md:text-2xl max-w-3xl mx-auto" style="color: var(--text-muted);">Vamos mergulhar nos dados e extrair informações valiosas com consultas mais avançadas.</p>
+                </div>
+                <div class="space-y-12 max-w-5xl mx-auto">
+                    <div class="dynamic-card p-10 animate-on-load"><h3 class="text-3xl font-bold gradient-text mb-4">Inspeção e Estrutura</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Começamos por visualizar amostras dos dados e entender a estrutura de cada tabela.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="comment">-- Visualizar os primeiros 10 registos da tabela de clientes</span>
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tabelaclientes <span class="keyword">LIMIT</span> 10;
+<span class="comment">-- Descrever a estrutura (colunas e tipos de dados) da tabela de colaboradores</span>
+<span class="keyword">DESCRIBE</span> tabelacolaboradores;</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><h3 class="text-3xl font-bold gradient-text mb-4">Agregações e Contagens</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Use funções como `COUNT`, `SUM`, `AVG`, `MIN` e `MAX` para resumir os dados e obter métricas importantes.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="comment">-- Contar o total de clientes</span>
+<span class="keyword">SELECT COUNT</span>(*) <span class="keyword">AS</span> total_clientes <span class="keyword">FROM</span> tabelaclientes;
+
+<span class="comment">-- Calcular o saldo médio em todas as contas</span>
+<span class="keyword">SELECT AVG</span>(Saldo) <span class="keyword">AS</span> saldo_medio <span class="keyword">FROM</span> tabelaconta;
+
+<span class="comment">-- Encontrar o maior salário entre os colaboradores</span>
+<span class="keyword">SELECT MAX</span>(Salario) <span class="keyword">AS</span> maior_salario <span class="keyword">FROM</span> tabelacolaboradores;</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><h3 class="text-3xl font-bold gradient-text mb-4">Agrupamento de Dados</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">A cláusula `GROUP BY` agrupa linhas que têm os mesmos valores em colunas especificadas, permitindo realizar agregações em cada grupo.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="comment">-- Contar quantos clientes existem por estado</span>
+<span class="keyword">SELECT</span> Estado, <span class="keyword">COUNT</span>(id_cliente) <span class="keyword">AS</span> numero_de_clientes
+<span class="keyword">FROM</span> tabelaclientes
+<span class="keyword">GROUP BY</span> Estado
+<span class="keyword">ORDER BY</span> numero_de_clientes <span class="keyword">DESC</span>;</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                    <div class="dynamic-card p-10 animate-on-load"><h3 class="text-3xl font-bold gradient-text mb-4">Manipulação de Dados</h3><p class="mb-6 text-lg" style="color: var(--text-muted);">Use `INSERT`, `UPDATE` e `DELETE` para adicionar, modificar e remover registos das suas tabelas.</p><div class="code-block-wrapper"><pre class="code-block"><code class="language-sql"><span class="comment">-- Inserir um novo cliente na tabela (exemplo)</span>
+<span class="keyword">INSERT INTO</span> tabelaclientes (id_cliente, DataNascimento, CPF, Nome, Email, Rua, Bairro, Cidade, Estado, CEP, funcional)
+<span class="keyword">VALUES</span> (<span class="string">'C90001'</span>, <span class="string">'1990-01-01'</span>, <span class="string">'12345678901'</span>, <span class="string">'João Silva'</span>, <span class="string">'joao@email.com'</span>, <span class="string">'Rua A'</span>, <span class="string">'Centro'</span>, <span class="string">'Cidade B'</span>, <span class="string">'SP'</span>, <span class="string">'12345678'</span>, <span class="string">'F0001'</span>);
+
+<span class="comment">-- Atualizar o status de um pagamento</span>
+<span class="keyword">UPDATE</span> tabelapagamento <span class="keyword">SET</span> Status = <span class="string">'Pago'</span> <span class="keyword">WHERE</span> id_pagamento = <span class="string">'ID_EXEMPLO'</span>;
+
+<span class="comment">-- Deletar um cliente</span>
+<span class="keyword">DELETE FROM</span> tabelaclientes <span class="keyword">WHERE</span> id_cliente = <span class="string">'C90001'</span>;
+</code></pre><button class="copy-btn"><i class="fas fa-copy"></i> Copiar</button></div></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Hero Section -->
+        <section id="inicio" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="dynamic-card p-10 flex flex-col lg:flex-row items-center gap-12 animate-on-load">
+                    <div class="lg:w-1/3 text-center">
+                        <div class="relative w-64 h-64 mx-auto floating-animation">
+                            <div class="absolute inset-0 rounded-full" style="background: var(--accent-gradient); filter: blur(32px); opacity: 0.7;"></div>
+                            <div class="relative profile-placeholder w-full h-full p-2">
+                               <img src="foto.png" alt="Foto de Perfil do Leandro" class="w-full h-full rounded-full object-cover">
+                           </div>
+                        </div>
+                    </div>
+                    <div class="lg:w-2/3 text-center lg:text-left">
+                        <h1 class="text-5xl lg:text-6xl font-extrabold mb-6">Olá, eu sou o <span class="gradient-text">Leandro!</span></h1>
+                        <p class="text-xl leading-relaxed mb-8" style="color: var(--text-muted);">Tenho 28 anos e estou construindo minha carreira em Inteligência Artificial e Dados. Curso Inteligência Artificial na Cruzeiro do Sul e sou Analista de Dados formado pelo SENAI, com experiência em Python, MySQL e Power BI. Acesse meu portfólio de projetos e descubra como posso aplicar meus conhecimentos em novos desafios.</p>
+                        <div class="flex items-center justify-center lg:justify-start gap-4 mb-8 flex-wrap">
+                            <a href="https://www.linkedin.com/in/leandro-andrade-oliveira/" target="_blank" rel="noopener noreferrer" class="btn-gradient"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                            <a href="https://github.com/leanttro" target="_blank" rel="noopener noreferrer" class="btn-gradient"><i class="fab fa-github"></i> GitHub</a>
+                            <a href="https://leanttro.github.io/portfolio/" target="_blank" rel="noopener noreferrer" class="btn-gradient"><i class="fas fa-briefcase"></i> Portfólio</a>
+                            <a href="https://wa.me/5511913324827" target="_blank" rel="noopener noreferrer" class="btn-gradient"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-12 border-t" style="border-color: var(--border-color);">
+        <div class="container mx-auto px-6 text-center" style="color: var(--text-muted);">
+            <div class="mb-4">
+                <i class="fas fa-database text-4xl gradient-text"></i>
+            </div>
+            <p class="font-semibold">&copy; 2025 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme switcher
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const html = document.documentElement;
+
+        const applyTheme = (theme) => {
+            if (theme === 'dark') {
+                html.classList.add('dark');
+                themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                html.classList.remove('dark');
+                themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        };
+
+        const savedTheme = localStorage.getItem('theme') || 'dark'; // Dark mode default
+        applyTheme(savedTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const codeBlock = button.previousElementSibling.querySelector('code');
+                const textToCopy = codeBlock.innerText;
+                const copyToClipboardFallback = (text) => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        const originalHTML = button.innerHTML;
+                        button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                        setTimeout(() => { button.innerHTML = originalHTML; }, 2000);
+                    } catch (err) { console.error('Error copying text: ', err); }
+                    document.body.removeChild(textArea);
+                };
+                if (!navigator.clipboard) { copyToClipboardFallback(textToCopy); return; }
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                    setTimeout(() => { button.innerHTML = originalHTML; }, 2000);
+                }, () => { copyToClipboardFallback(textToCopy); });
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-load').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Glossary Modal Logic
+        const glossaryTerms = {
+            'PRIMARY KEY': { title: 'PRIMARY KEY (Chave Primária)', description: 'Identifica de forma única cada registo numa tabela. Os valores devem ser únicos e não podem ser nulos (NULL).' },
+            'FOREIGN KEY': { title: 'FOREIGN KEY (Chave Estrangeira)', description: 'Cria uma ligação entre duas tabelas, referenciando a CHAVE PRIMÁRIA de outra tabela para manter a integridade dos dados.' },
+            'NOT NULL': { title: 'NOT NULL (Não Nulo)', description: 'Garante que uma coluna não pode ter um valor nulo (vazio), forçando um campo a conter sempre um valor.' },
+            'VARCHAR': { title: 'VARCHAR', description: 'Tipo de dado para armazenar texto de comprimento variável. `VARCHAR(100)` armazena até 100 caracteres.' },
+            'INT': { title: 'INT (Integer)', description: 'Tipo de dado para armazenar números inteiros (positivos, negativos ou zero).' },
+            'DECIMAL': { title: 'DECIMAL', description: 'Tipo de dado para armazenar números com casas decimais de forma exata, ideal para valores monetários.' },
+            'DATE': { title: 'DATE', description: 'Tipo de dado para armazenar uma data no formato `AAAA-MM-DD`.' },
+            'NULL': { title: 'NULL (Nulo)', description: 'Representa um valor ausente ou desconhecido num campo. Não é o mesmo que zero ou um espaço em branco.' },
+            'SELECT': { title: 'SELECT', description: 'O comando mais utilizado em SQL, usado para consultar e extrair dados de uma ou mais tabelas.' },
+            'GROUP BY': { title: 'GROUP BY', description: 'Agrupa linhas que têm os mesmos valores em colunas especificadas, para que possa executar funções de agregação (como COUNT) em cada grupo.' },
+            'ORDER BY': { title: 'ORDER BY', description: 'Ordena o conjunto de resultados de uma consulta em ordem ascendente (ASC) ou descendente (DESC).' },
+            'LIMIT': { title: 'LIMIT', description: 'Restringe o número de linhas retornadas por uma consulta. Útil para visualizar pequenas amostras de grandes conjuntos de dados.' },
+            'INSERT': { title: 'INSERT INTO', description: 'Adiciona um ou mais novos registos (linhas) a uma tabela.' },
+            'UPDATE': { title: 'UPDATE', description: 'Modifica os registos existentes numa tabela. A cláusula `WHERE` é crucial para especificar quais linhas devem ser atualizadas.' },
+            'DELETE': { title: 'DELETE', description: 'Remove um ou mais registos de uma tabela. A cláusula `WHERE` é crucial para especificar quais linhas devem ser removidas.' },
+            'COUNT': { title: 'COUNT', description: 'Uma função de agregação que retorna o número de linhas que correspondem a um critério especificado.' },
+            'AS': { title: 'AS (Alias)', description: 'Renomeia uma coluna ou tabela com um nome temporário (um "alias"), tornando as consultas mais legíveis.' },
+            'DISTINCT': { title: 'DISTINCT', description: 'Retorna apenas valores distintos (diferentes) numa coluna. Útil para ver todas as categorias únicas de um campo.' }
+        };
+
+        const modal = document.getElementById('glossary-modal');
+        const modalCard = document.getElementById('glossary-modal-card');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDescription = document.getElementById('modal-description');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        document.querySelectorAll('.glossary-term').forEach(term => {
+            term.addEventListener('click', () => {
+                const termKey = term.dataset.term;
+                const content = glossaryTerms[termKey];
+                
+                modalTitle.innerText = content.title;
+                modalDescription.innerText = content.description;
+                
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                     modalCard.classList.remove('opacity-0', 'scale-95');
+                }, 10);
+            });
+        });
+
+        const closeModal = () => {
+            modalCard.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        };
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+    </script>
+</body>
+</html>
+

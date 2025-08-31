@@ -1,0 +1,101 @@
+funcional,Salario,NomeColaborador,EmailColaborador,Cargo,CPFColaborador,TelefoneColaborador,id_departamento
+F0001,3793.83,João Guilherme Dias,thomas54@silveira.net,Especialista em Risco,71436528062,55819488184,D001
+F0002,11067.58,Ana Laura Pereira,pintoalexia@mendes.com,Especialista em Risco,96472580111,55849605781,D002
+F0003,12402.87,Alice Fogaça,joaquim33@silva.org,Coordenador de Operações,63902758465,55719543017,D006
+F0004,13247.07,Sarah da Luz,fariascatarina@peixoto.org,Analista de Crédito,92580714685,55519467995,D010
+F0005,4584.32,Ana Júlia Silva,leandropinto@almeida.org,Analista de Crédito,65293740865,55619905306,D003
+F0006,3222.92,Luiz Otávio da Rocha,sabrinabarros@das.com,Coordenador de Operações,79032465180,55719445802,D001
+F0007,9625.06,Erick Cunha,carolinacostela@martins.com,Analista de Crédito,38549267155,55519653765,D009
+F0008,6800.2,Lorenzo Pinto,mourarenan@da.br,Especialista em Risco,36591028730,55619433377,D006
+F0009,7980.14,Diogo Nascimento,sofia39@moraes.com,Gerente de Relacionamento,13497082678,55819299711,D006
+F0010,6579.89,Davi Lucca Silva,ian12@pinto.net,Especialista em Risco,34156720934,55849244278,D005
+F0011,14188.38,Isaac Cunha,bryanaraujo@moraes.net,Coordenador de Operações,75416902876,55849553838,D004
+F0012,3207.18,Bruna das Neves,castrojoao-miguel@das.com,Atendente,19603875457,55119580691,D007
+F0013,6604.92,Pedro Lucas Aragão,caua59@da.br,Atendente,84519372097,55219854169,D007
+F0014,7335.69,Maria Eduarda Araújo,jesusluiz-henrique@fernandes.br,Analista de Crédito,85376429164,55319364395,D010
+F0015,8850.76,Marcos Vinicius Ribeiro,silveiralavinia@da.com,Analista de Crédito,21560873930,55619781082,D008
+F0016,10281.24,Davi Lucca Vieira,aragaosabrina@da.org,Coordenador de Operações,49782150304,55419742306,D003
+F0017,5644.38,Calebe Nascimento,pviana@souza.net,Atendente,50367942143,55719565136,D001
+F0018,10853.09,Bernardo Oliveira,pintogabrielly@barros.net,Analista de Crédito,72815934060,55119658942,D007
+F0019,14280.58,Amanda Costa,joao-guilherme17@peixoto.br,Gerente de Relacionamento,40859273610,55119844928,D001
+F0020,8288.52,Dra. Clarice Silva,yagoferreira@freitas.br,Especialista em Risco,52307964134,55819200101,D007
+F0021,10381.6,Maria Alice Cunha,gabriellysilva@silveira.br,Coordenador de Operações,95483602170,55319246562,D003
+F0022,10249.35,Calebe Moura,luigicastro@costela.com,Analista de Crédito,62543087974,55319009290,D002
+F0023,9456.49,Bruno Aragão,vmoura@araujo.br,Analista de Crédito,96781243004,55419618409,D003
+F0024,9395.53,Erick Castro,smoreira@ferreira.br,Gerente de Relacionamento,61243097850,55119908373,D006
+F0025,11353.28,Yago Araújo,emendes@rezende.br,Gerente de Relacionamento,07841596375,55519059654,D008
+F0026,5058.11,Sarah Correia,calebeda-luz@fernandes.br,Coordenador de Operações,73968254155,55519768795,D004
+F0027,11297.65,Sra. Giovanna Vieira,goncalvesana-laura@da.org,Gerente de Relacionamento,08765249194,55619162874,D010
+F0028,4332.34,Sophia Cardoso,leonardo62@fernandes.br,Coordenador de Operações,54098637200,55219023092,D003
+F0029,7627.33,Augusto da Costa,giovanna43@vieira.br,Gerente de Relacionamento,39870614213,55419628163,D005
+F0030,7087.34,Sr. Pedro da Cruz,npires@almeida.com,Atendente,51423680707,55519646252,D001
+F0031,7932.75,Sr. Kaique Lopes,costabruna@dias.com,Atendente,45701698300,55719994835,D002
+F0032,8977.01,Sr. Lorenzo Duarte,manuela87@nogueira.com,Gerente de Relacionamento,59426387137,55819339836,D002
+F0033,5506.15,Isabel Cunha,hlopes@cavalcanti.com,Gerente de Relacionamento,19560482785,55119536524,D007
+F0034,4158.47,Emilly Farias,marcelacardoso@nogueira.net,Atendente,06843157262,55719698291,D007
+F0035,6082.45,Guilherme Gonçalves,yfogaca@cavalcanti.br,Coordenador de Operações,86417039269,55219089763,D008
+F0036,10168.71,Luigi Monteiro,maite49@da.net,Atendente,28569431791,55319183624,D006
+F0037,14260.63,Pedro Henrique Martins,carolinaduarte@da.org,Coordenador de Operações,79613452800,55519870773,D006
+F0038,11080.11,Sofia Teixeira,costelagabrielly@santos.net,Especialista em Risco,68017349203,55319547561,D002
+F0039,3435.73,Theo Sales,cavalcantisarah@pereira.com,Gerente de Relacionamento,35806271986,55619609987,D009
+F0040,5913.28,Rafael Duarte,thales00@moraes.net,Especialista em Risco,36241908731,55419570057,D003
+F0041,3134.47,Ana Lívia Peixoto,maysafreitas@fernandes.net,Atendente,24576810901,55319054999,D010
+F0042,5501.83,João Felipe Mendes,costadiogo@cunha.com,Coordenador de Operações,02315864933,55419716707,D001
+F0043,6326.37,Benjamin Vieira,gomesmelissa@sales.com,Coordenador de Operações,86257013968,55849372874,D007
+F0044,13258.38,Caroline Moraes,inovaes@viana.org,Especialista em Risco,36178920512,55619911525,D003
+F0045,14588.9,Dr. Vitor Hugo Azevedo,ana-sophiamelo@da.br,Atendente,49610523706,55619261885,D003
+F0046,12558.63,Esther Barbosa,udias@oliveira.com,Coordenador de Operações,02368954198,55819951729,D004
+F0047,5099.28,Bruno da Rocha,amanda33@martins.br,Coordenador de Operações,79364850238,55419447709,D006
+F0048,5835.34,Thales Melo,aragaodavi-lucca@goncalves.com,Coordenador de Operações,18726304996,55519550032,D005
+F0049,3172.44,Lavínia da Rosa,estherrezende@da.br,Atendente,02853419797,55119312749,D001
+F0050,12152.29,Vinicius Pires,amanda25@souza.com,Gerente de Relacionamento,43275108905,55519102282,D008
+F0051,11075.17,Erick da Luz,ysilva@campos.com,Analista de Crédito,54176902876,55519872693,D009
+F0052,13342.09,Sra. Sarah Viana,milenamoraes@vieira.net,Atendente,81029635730,55619237592,D010
+F0053,12544.92,Lívia Nascimento,emanuellanogueira@da.net,Analista de Crédito,16280974502,55849908386,D005
+F0054,4860.68,Marcos Vinicius da Costa,nathanda-cruz@azevedo.com,Especialista em Risco,63502497800,55419316689,D004
+F0055,6460.05,Bárbara Cunha,piresenrico@lopes.net,Coordenador de Operações,72350649199,55119690921,D003
+F0056,7088.78,João Miguel da Rocha,ana-julia07@pires.br,Analista de Crédito,82145706380,55719935677,D002
+F0057,3630.58,Emilly Moreira,maria-luiza42@ramos.br,Atendente,63507192470,55419446919,D003
+F0058,9141.92,Dr. Nathan Fogaça,santosheloisa@carvalho.br,Gerente de Relacionamento,58064179300,55819505317,D008
+F0059,4213.35,Yago Nogueira,helenadias@caldeira.br,Analista de Crédito,72854360974,55319762106,D008
+F0060,9674.67,Carlos Eduardo Cavalcanti,tcardoso@alves.br,Analista de Crédito,97503461810,55849539257,D002
+F0061,11460.63,Francisco Costa,maria-julia15@da.org,Analista de Crédito,24103576952,55519970091,D003
+F0062,3451.18,Dra. Luiza Campos,mda-mota@porto.br,Atendente,41796520802,55719843363,D009
+F0063,4068.48,Gustavo da Rocha,isabelda-luz@das.net,Coordenador de Operações,63901785493,55319034734,D001
+F0064,3852.66,Henrique Duarte,kamilly23@viana.com,Especialista em Risco,86125490351,55319427008,D003
+F0065,8686.97,Pedro Lucas Viana,ana-claraalmeida@caldeira.br,Coordenador de Operações,35289710612,55119839471,D002
+F0066,11402.79,Catarina Martins,viniciusoliveira@moura.br,Atendente,40971253897,55519594398,D006
+F0067,13928.85,Luiz Henrique Fogaça,maria-fernandarezende@da.org,Coordenador de Operações,49215036806,55319150581,D006
+F0068,14459.63,Sra. Mariane Freitas,pedro-miguel82@moura.com,Analista de Crédito,28036497565,55819963394,D004
+F0069,7105.12,Joana Moraes,jmonteiro@caldeira.net,Analista de Crédito,25076391803,55419093743,D001
+F0070,5849.11,Emanuel da Cruz,meloarthur@correia.net,Especialista em Risco,14350978232,55719458158,D003
+F0071,11197.11,Luiz Miguel Ferreira,goncalvescarlos-eduardo@jesus.br,Atendente,27631509859,55119501114,D005
+F0072,4760.89,Dra. Marina Alves,salesluiz-fernando@moraes.org,Analista de Crédito,28014369769,55719302841,D007
+F0073,8357.99,Clara Correia,caiogomes@moraes.net,Gerente de Relacionamento,10783925603,55219190196,D004
+F0074,11206.83,Sr. Gabriel Nogueira,kamilly93@mendes.net,Analista de Crédito,87045361262,55319309998,D006
+F0075,13519.92,Luigi Novaes,carlos-eduardo35@almeida.br,Analista de Crédito,03651794857,55619083618,D003
+F0076,7588.62,Samuel Cunha,gpereira@ferreira.com,Coordenador de Operações,30159847648,55719487872,D006
+F0077,14568.18,Natália Rodrigues,bfarias@melo.br,Gerente de Relacionamento,82715463090,55519489930,D003
+F0078,5321.38,Gustavo Henrique Santos,bramos@farias.br,Atendente,31947652800,55419331984,D003
+F0079,10650.4,Joaquim Campos,da-rosamaria-sophia@ribeiro.net,Gerente de Relacionamento,78912356003,55819983279,D001
+F0080,7316.41,Ryan Moraes,alanacardoso@freitas.br,Coordenador de Operações,85710496294,55519539225,D010
+F0081,11244.45,Gabriel Barros,vianacaio@barros.com,Atendente,42713580617,55319961444,D004
+F0082,4087.08,Raquel Jesus,amanda18@ramos.com,Especialista em Risco,84319652070,55319638854,D006
+F0083,14616.14,Dr. João Pedro Barbosa,biancasilveira@moreira.com,Atendente,42061579876,55819225452,D008
+F0084,9844.12,Dr. Pedro Lucas Moreira,kaiquenunes@dias.net,Especialista em Risco,39725416864,55119575744,D009
+F0085,9880.69,Cecília Monteiro,ana-carolina73@barbosa.br,Coordenador de Operações,21743096534,55419025549,D010
+F0086,12153.42,Dra. Nicole Fernandes,bda-mata@lopes.net,Analista de Crédito,75316284062,55419485763,D007
+F0087,10502.51,Maria Farias,calebe53@castro.br,Analista de Crédito,46215708380,55519886092,D005
+F0088,4226.84,Srta. Luna Azevedo,ninada-mota@barros.net,Analista de Crédito,15263048998,55849820529,D005
+F0089,9128.01,Daniel Gomes,hpires@vieira.br,Analista de Crédito,10834756900,55219743622,D003
+F0090,8456.41,André Silva,guilherme29@souza.com,Atendente,58042713690,55849743027,D002
+F0091,14974.86,Luiz Felipe Martins,aalmeida@martins.com,Gerente de Relacionamento,81506729401,55849244853,D004
+F0092,5786.02,Sr. Guilherme da Costa,danielgoncalves@silveira.br,Atendente,37021654952,55819016606,D001
+F0093,3686.39,Sabrina Duarte,giovanna86@moura.br,Coordenador de Operações,16789534237,55519816368,D006
+F0094,7005.7,Alana Melo,nribeiro@silveira.com,Especialista em Risco,10476258901,55819915724,D004
+F0095,10513.75,Dra. Maria Cecília Costa,thomascosta@novaes.com,Analista de Crédito,23594086747,55119036588,D003
+F0096,3719.88,Nathan Alves,salesandre@monteiro.br,Especialista em Risco,17298350404,55119544227,D003
+F0097,5869.06,Lara Ferreira,davi-lucasmoraes@farias.org,Gerente de Relacionamento,31648725007,55619231480,D001
+F0098,11423.85,Dr. Daniel Fernandes,isabelly04@silveira.org,Coordenador de Operações,79432816591,55719141598,D005
+F0099,12501.71,Dra. Ana Luiza Barros,alexandreoliveira@da.com,Coordenador de Operações,31059827603,55519996681,D004
+F0100,7398.76,Noah Porto,aliciacunha@barbosa.br,Especialista em Risco,16374850262,55219290685,D002
