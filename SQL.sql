@@ -296,6 +296,123 @@ Select Min(Salario) From tabelacolaboradores;
 Select AVG(Salario) From tabelacolaboradores;
 Select AVG(Saldo) From tabelaconta;
 
+-- APELIDAR COLUNAS - ALIAS (AS)
+Select Nome as NomeCliente
+From tabelaclientes;
+
+-- FILTRAR VALORES SEMELHANTES (LIKE)
+Select Nome From tabelaclientes
+Where Nome Like "%Silva";
+
+Select Nome From tabelaclientes
+Where Nome Like "Maria%";
+
+Select Telefone as TELEFONE011 From tabelatelefones
+Where Telefone Like "5511%";
+
+Select Nome From tabelaclientes
+Where Nome Like "%Maria%" AND Nome Like "%Julia%";
+
+
+-- QUANTIDADE DE DIAS DESDE A DATA (DATEDIFF(CURDATE(),DataInicio)):
+Select num_conta,
+DATEDIFF(CURDATE(),DataAbertura) AS Dias_desde_Abertura
+From tabelaconta;
+
+SELECT num_contrato, id_cliente,
+       DATEDIFF(CURDATE(), DataInicio) AS dias_desde_contratacao
+FROM tabelaemprestimos;
+
+-- SELECIONA QUANTIDADE STRINGS ESPECÍFICAS (WHERE LENGTH):
+SELECT Nome, LENGTH(Nome) AS Qtd
+FROM tabelaclientes
+WHERE LENGTH(Nome) = 30;
+
+-- FILTRAR POR CATEGORIAS AGRUPADAS:
+Select Cargo, SUM(Salario)
+From tabelacolaboradores
+Group By cargo
+HAVING SUM(Salario) > 200000;
+
+SELECT Cargo, COUNT(*) Qtd
+   FROM tabelacolaboradores
+   GROUP BY cargo
+   HAVING qtd >= 20;
+
+-- LIMPEZA DE STRINGS (REMOVE ESPAÇOS ANTES E DEPOIS DO CONTEÚDO)[TRIM]:
+SELECT TRIM(Nome) as nome_limpos from tabelaclientes;
+
+-- SE / SE NÃO (CASE) E CLASSIFICAÇÃO:
+Select num_contrato,valor,
+CASE
+WHEN valor <= 1000 THEN "Baixo valor"
+WHEN valor > 1000 AND valor <= 5000 THEN "Médio valor"
+WHEN valor > 5000 AND valor <= 10000 THEN "Alto valor"
+WHEN valor > 10000 THEN "Muito alto"
+ELSE "DESCONHECIDO"
+END AS classificacao_emprestimos
+From tabelaemprestimos; 
+
+-- ARREDONDANDO VALORES NUMÉRICOS COM X NÚMERO DE CASAS (ROUND)
+Select num_contrato,
+ROUND(valor,1) as parcelas
+From tabelaemprestimos;
+
+-- SELECIONANDO DADOS ALEATÓRIOS DA TABELA (RAND())
+Select num_contrato, valor
+From tabelaemprestimos ORDER BY RAND() limit 10;
+
+
+-- UNINDO DUAS TABELAS EM UMA ÚNICA TABELA - SEM REPETIÇÕES (UNION):
+SELECT Telefone, id_cliente FROM tabelatelefones 
+UNION
+SELECT TelefoneColaborador, funcional FROM tabelacolaboradores;
+
+-- UNINDO DUAS TABELAS EM UMA ÚNICA TABELA - COM REPETIÇÕES (UNION ALL):
+SELECT Telefone, id_cliente FROM tabelatelefones 
+UNION ALL
+SELECT TelefoneColaborador, funcional FROM tabelacolaboradores;
+
+-- SUBCONSULTAS (SOMENTE 1 SUBCONSULTA):
+Select c.Nome As Cliente,
+(Select NomeColaborador From tabelacolaboradores as g WHERE g.funcional = c.funcional) AS GERENTE
+from tabelaclientes as c;
+
+Select c.Nome As Cliente,
+(Select TelefoneColaborador From tabelacolaboradores as g WHERE g.funcional = c.funcional) AS TELEFONEGERENTE
+from tabelaclientes as c;
+
+-- SUBCONSULTA AMPLIADA (IN):
+-- Nome dos clientes que fizeram o total de 1 empréstimo:
+SELECT Nome FROM tabelaclientes
+WHERE id_cliente IN (SELECT id_cliente FROM tabelaemprestimos WHERE Status = 1);
+
+-- COMBINAÇÃO DE DADOS (MOSTRAR DADOS DE DIFERENTES TABELAS EM UMA CONSULTA) [JOIN]:
+Select c.Nome , e.Valor
+FROM tabelaclientes as c
+Join tabelaemprestimos as e ON c.id_cliente = e.id_cliente;
+
+-- Combinação filtrada:
+Select c.Nome , e.Valor, e.Status
+FROM tabelaclientes as c
+Join tabelaemprestimos as e ON c.id_cliente = e.id_cliente
+WHERE STATUS = 0;
+
+-- GROUP BY E HAVING COM TABELA COMBINADA:
+Select c.Nome, COUNT(e.num_contrato)
+From tabelaclientes as c
+Join tabelaemprestimos as e ON c.id_cliente = e.id_cliente
+GROUP BY c.Nome
+HAVING COUNT(e.num_contrato) >= 2;
+
+
+
+
+
+    
+
+
+
 
  
 
